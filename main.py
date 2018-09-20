@@ -1,11 +1,31 @@
+"""
+SonOff Long Press detection
+
+https://github.com/swvincent/sonoff-long-press
+
+Detects short and long presses of the button on a SonOff Basic WiFi
+smart switch. Also provides debouncing of the button. On a short
+press the relay and LED are toggled. On a long press, a message is
+printed which can be viewed in the REPL.
+
+This code can be built upon to create a program for the SonOff Basic.
+It should also adapt well to other ESP8266-based devices and boards.
+
+All testing was done with a SonOff Basic marked SonOff TH_V1.1
+
+Copyright 2018 Scott W. Vincent, shared under an MIT License.
+"""
+
 from machine import Pin, PWM
 import utime
 
-# Constants
+# I found 20ms works well without being too long. That filters
+# out all of the bounces w/o losing the actual button presses.
+# For the long press, I went by what feels to me like a "long"
+# press but it's arbitrary.
 DEBOUNCE_TIME = 20
 LONG_PRESS_TIME = 600
 
-# Global
 button_last_pressed_time= 0
 
 # GPIO Setup
@@ -19,8 +39,10 @@ relay.off()
 
 
 def change_relay_state():
-    # Toggle value of relay and led. Note
-    # that led is NC so it's opposite.
+    """
+    Toggle value of relay and LED. Note
+    that led is NC so it's opposite.
+    """
     relay.value(led.value())
     led.value(not led.value())
 
@@ -42,10 +64,6 @@ def button_pressed(p):
         elif hold_length > DEBOUNCE_TIME:
             # Short press
             change_relay_state()
-        else:
-            # This is just for TS purposes and can be removed
-            print(time_pressed,
-                  'Short press ignored: {}ms'.format(hold_length))
 
         # Reset last pressed time
         button_last_pressed_time = 0
