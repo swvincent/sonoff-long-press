@@ -2,9 +2,6 @@ from machine import Pin, PWM
 import utime
 
 # Constants
-BUTTON_PIN = 0
-RELAY_PIN = 12
-LED_PIN = 13
 DEBOUNCE_TIME = 20
 LONG_PRESS_TIME = 600
 
@@ -12,17 +9,18 @@ LONG_PRESS_TIME = 600
 button_last_pressed_time= 0
 
 # GPIO Setup
-button = Pin(BUTTON_PIN, Pin.IN, Pin.PULL_UP)
-led = Pin(LED_PIN, Pin.OUT)
-relay = Pin(RELAY_PIN, Pin.OUT)
+button = Pin(0, Pin.IN, Pin.PULL_UP)
+led = Pin(13, Pin.OUT)
+relay = Pin(12, Pin.OUT)
 
-# Everything off at start. led is NC.
+# Everything off at start. led is "normally closed"
 led.on()
 relay.off()
 
 
 def change_relay_state():
-    # Toggle value of relay and led. Note that led is NC so it's opposite.
+    # Toggle value of relay and led. Note
+    # that led is NC so it's opposite.
     relay.value(led.value())
     led.value(not led.value())
 
@@ -45,7 +43,7 @@ def button_pressed(p):
             # Short press
             change_relay_state()
         else:
-            # This is just for TS purposes
+            # This is just for TS purposes and can be removed
             print(time_pressed,
                   'Short press ignored: {}ms'.format(hold_length))
 
