@@ -16,7 +16,7 @@ All testing was done with a SonOff Basic marked SonOff TH_V1.1
 Copyright 2018 Scott W. Vincent, shared under an MIT License.
 """
 
-from machine import Pin, PWM
+from machine import Pin
 import utime
 
 # I found 20ms works well without being too long. That filters
