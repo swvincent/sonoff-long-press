@@ -26,7 +26,7 @@ import utime
 DEBOUNCE_TIME = 20
 LONG_PRESS_TIME = 600
 
-button_last_pressed_time= 0
+time_last_button_press= 0
 
 # GPIO Setup
 button = Pin(0, Pin.IN, Pin.PULL_UP)
@@ -48,13 +48,13 @@ def change_relay_state():
 
 
 def button_pressed(p):
-    global button_last_pressed_time
+    global time_last_button_press
 
     time_pressed = utime.ticks_ms()
 
-    if button.value() and button_last_pressed_time > 0:
+    if button.value() and time_last_button_press > 0:
         # Button released, determine length since press
-        hold_length = utime.ticks_diff(time_pressed, button_last_pressed_time)
+        hold_length = utime.ticks_diff(time_pressed, time_last_button_press)
 
         if hold_length > LONG_PRESS_TIME:
             # Long press
@@ -66,10 +66,10 @@ def button_pressed(p):
             change_relay_state()
 
         # Reset last pressed time
-        button_last_pressed_time = 0
-    elif not button.value() and button_last_pressed_time == 0:
+        time_last_button_press = 0
+    elif not button.value() and time_last_button_press == 0:
         # First button press since last release; record time
-        button_last_pressed_time = time_pressed
+        time_last_button_press = time_pressed
 
 
 # SonOff Basic button seems to be NC, so Falling is on press not release
